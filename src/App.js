@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import { saveJoke } from "./services/jokeService";
+import stevePic from "./assets/steve.png";
 
-function App() {
+export const App = () => {
+  const [newJoke, setNewJoke] = useState("");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="app-container">
+      <div className="app-heading">
+        <div className="app-heading-circle">
+          <img className="app-logo" src={stevePic} alt="Good job Steve" />
+        </div>
+        <h1 className="app-heading-text">Chuckle Checklist</h1>
+      </div>
+      <h2>Add Joke</h2>
+      <section className="joke-add-form">
+        <input
+          className="joke-input"
+          type="text"
+          value={newJoke}
+          placeholder="New One Liner"
+          onChange={(event) => {
+            setNewJoke(event.target.value);
+          }}
+        />
+        <button
+          className="joke-input-submit"
+          onClick={() => {
+            saveJoke(newJoke);
+            setNewJoke("");
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          Add
+        </button>
+      </section>
     </div>
   );
-}
-
-export default App;
+};
