@@ -1,7 +1,5 @@
 export const getAllJokes = () => {
-  return fetch("http://localhost:8088/jokes").then((res) => {
-    res.json();
-  });
+  return fetch("http://localhost:8088/jokes").then((res) => res.json());
 };
 
 export const saveJoke = async (newJoke) => {
