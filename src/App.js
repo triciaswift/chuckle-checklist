@@ -1,6 +1,11 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { getAllJokes, saveJoke } from "./services/jokeService";
+import {
+  deleteJoke,
+  getAllJokes,
+  replaceJoke,
+  saveJoke,
+} from "./services/jokeService";
 import stevePic from "./assets/steve.png";
 
 export const App = () => {
@@ -9,11 +14,14 @@ export const App = () => {
   const [untoldJokes, setUntoldJokes] = useState([]);
   const [toldJokes, setToldJokes] = useState([]);
 
-  useEffect(() => {
+  const getJokes = () => {
     getAllJokes().then((jokesArray) => {
       setAllJokes(jokesArray);
-      console.log("Jokes all set!");
     });
+  };
+
+  useEffect(() => {
+    getJokes();
   }, []);
 
   useEffect(() => {
@@ -21,8 +29,23 @@ export const App = () => {
     setUntoldJokes(untold);
     const told = allJokes.filter((joke) => joke.told === true);
     setToldJokes(told);
-    console.log("Jokes sorted!");
   }, [allJokes]);
+
+  const handleSave = () => {
+    if (newJoke) {
+      saveJoke(newJoke).then(() => {
+        getJokes();
+      });
+      setNewJoke("");
+    }
+  };
+
+  const editJoke = (object) => {
+    object.told = !object.told;
+    replaceJoke(object).then(() => {
+      getJokes();
+    });
+  };
 
   return (
     <div className="app-container">
@@ -46,8 +69,7 @@ export const App = () => {
         <button
           className="joke-input-submit"
           onClick={() => {
-            saveJoke(newJoke);
-            setNewJoke("");
+            handleSave();
           }}
         >
           Add
@@ -56,26 +78,66 @@ export const App = () => {
       <div className="joke-lists-container">
         <div className="joke-list-container">
           <h2>
-            Untold
+            <i className="fa-regular fa-face-meh"></i> Untold
             <span className="untold-count">{untoldJokes.length}</span>
           </h2>
           {untoldJokes.map((joke) => {
             return (
               <li className="joke-list-item" key={joke.id}>
                 <p className="joke-list-item-text">{joke.text}</p>
+                <div>
+                  <button
+                    className="joke-list-action-delete"
+                    onClick={() => {
+                      deleteJoke(joke.id).then(() => {
+                        getJokes();
+                      });
+                    }}
+                  >
+                    <i className="fa-solid fa-trash-can"></i>
+                  </button>
+                  <button
+                    className="joke-list-action-toggle"
+                    onClick={() => {
+                      editJoke(joke);
+                    }}
+                  >
+                    <i className="fa-regular fa-face-grin-squint"></i>
+                  </button>
+                </div>
               </li>
             );
           })}
         </div>
         <div className="joke-list-container">
           <h2>
-            Told
+            <i className="fa-regular fa-face-grin-squint"></i> Told
             <span className="told-count">{toldJokes.length}</span>
           </h2>
           {toldJokes.map((joke) => {
             return (
               <li className="joke-list-item" key={joke.id}>
                 <p className="joke-list-item-text">{joke.text}</p>
+                <div>
+                  <button
+                    className="joke-list-action-delete"
+                    onClick={() => {
+                      deleteJoke(joke.id).then(() => {
+                        getJokes();
+                      });
+                    }}
+                  >
+                    <i className="fa-solid fa-trash-can"></i>
+                  </button>
+                  <button
+                    className="joke-list-action-toggle"
+                    onClick={() => {
+                      editJoke(joke);
+                    }}
+                  >
+                    <i className="fa-regular fa-face-meh" />
+                  </button>
+                </div>
               </li>
             );
           })}
