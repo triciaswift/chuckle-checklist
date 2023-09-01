@@ -33,7 +33,7 @@ export const replaceJoke = async (jokeObject) => {
 };
 
 export const deleteJoke = async (jokeId) => {
-  const putOptions = {
+  const deleteOptions = {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -41,6 +41,6 @@ export const deleteJoke = async (jokeId) => {
   };
   const response = await fetch(
     `http://localhost:8088/jokes/${jokeId}`,
-    putOptions
+    deleteOptions
   );
 };
